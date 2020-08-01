@@ -53,6 +53,10 @@ jobs:
       run: |
         ./sign.sh
 
+    - name: Zip up release directory
+      run: |
+        zip -r release-binaries.zip release/
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -64,46 +68,13 @@ jobs:
         draft: false
         prerelease: false
 
-    - name: Upload MacOS DMG
+    - name: Upload release binaries Zip
       id: upload-release-asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: release/darwin/hello-github.dmg
-        asset_name: macos-hello-github.dmg
-        asset_content_type: application/apple-diskimage
-
-    - name: Upload MacOS Zip
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: release/darwin/hello-github.zip
-        asset_name: macos-hello-github.zip
+        asset_path: release-binaries.zip
+        asset_name: release-binaries.zip
         asset_content_type: application/zip
-
-    - name: Upload Windows Binary
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: release/windows/hello-github.exe
-        asset_name: hello-github.exe
-        asset_content_type: application/zip
-
-    - name: Upload Linux Binary
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: release/linux/hello-github
-        asset_name: hello-github
-        asset_content_type: application/octet-stream
