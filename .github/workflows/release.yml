@@ -33,9 +33,6 @@ jobs:
         name: binaries
         path: release/
 
-    - name: Display structure of downloaded files
-      run: ls -R
-
     - name: Import Code-Signing Certificates
       uses: Apple-Actions/import-codesign-certs@v1
       with:
@@ -56,8 +53,57 @@ jobs:
       run: |
         ./sign.sh
 
-    - name: Archive Mac DiskImage distributable
-      uses: actions/upload-artifact@v2
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: Released-Mac-DiskImage
-        path: release/darwin/
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - name: Upload MacOS DMG
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release/darwin/hello-github.dmg
+        asset_name: macos-hello-github.dmg
+        asset_content_type: application/apple-diskimage
+
+    - name: Upload MacOS Zip
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release/darwin/hello-github.zip
+        asset_name: macos-hello-github.zip
+        asset_content_type: application/zip
+
+    - name: Upload Windows Binary
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release/windows/hello-github.exe
+        asset_name: hello-github.exe
+        asset_content_type: application/zip
+
+    - name: Upload Linux Binary
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release/linux/hello-github
+        asset_name: hello-github
+        asset_content_type: application/octet-stream
