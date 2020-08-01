@@ -1,0 +1,17 @@
+{
+    "source" : ["./release/darwin/hello-github"],
+    "bundle_id" : "com.kencochrane.hello-github",
+    "apple_id": {
+        "password":  "@env:AC_PASSWORD"
+    },
+    "sign" :{
+        "application_identity" : "4194587FE60D93D416CF3F4669FF913C7BBA4271"
+    },
+    "dmg" :{
+        "output_path":  "./release/darwin/hello-github.dmg",
+        "volume_name":  "hello-github"
+    },
+    "zip" :{
+        "output_path" : "./release/darwin/hello-github.zip"
+    }
+}
